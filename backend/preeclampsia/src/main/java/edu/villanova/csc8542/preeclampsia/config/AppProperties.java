@@ -6,21 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix="app.ihealth")
 public class AppProperties {
 
-    /*
-
-app.ihealth.authorization-url=https://api.ihealthlabs.com:8443/OpenApiV2/OAuthv2/userauthorization/
-app.ihealth.provider=ihealth-provider
-app.ihealth.client-id=749b87059be34fa7a05b7d44697cbaf0
-app.ihealth.client-secret=db9b5af548e34d9d9200ac0d8582e7f7
-app.ihealth.response-type=code
-app.ihealth.redirect-uri=http://localhost:8080/redirect
-
-app.ihealth.api-name=OpenApiBP
-app.ihealth.api-sc=59d924ee122f4a9dacc08564ed545ecf
-app.ihealth.api-sv=27aae441c85c4cc6b2ab97213a95da1a
-
-     */
-
+    private String baseUrl;
     private String authorizationUrl;
     private String clientId;
     private String clientSecret;
@@ -34,6 +20,14 @@ app.ihealth.api-sv=27aae441c85c4cc6b2ab97213a95da1a
     @PostConstruct
     public void show() {
         System.out.println("authorizationUrl=" + authorizationUrl);
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public String getAuthorizationUrl() {

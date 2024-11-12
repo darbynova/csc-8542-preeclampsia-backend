@@ -4,6 +4,7 @@ import edu.villanova.csc8542.preeclampsia.config.AppProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
@@ -13,9 +14,11 @@ import java.util.Map;
 public class HealthController {
 
     private AppProperties appProperties;
+    private RestClient restClient;
 
-    public HealthController(AppProperties appProperties) {
+    public HealthController(AppProperties appProperties, RestClient.Builder restClientBuilder) {
         this.appProperties = appProperties;
+        this.restClient = restClientBuilder.baseUrl(appProperties.getBaseUrl()).build();
     }
 
     @GetMapping("/auth")
@@ -36,7 +39,7 @@ public class HealthController {
     }
 
     @GetMapping("/redirect")
-    public String processAuth(@RequestParam String code) {
+    public String requestAccessToken(@RequestParam String code) {
         System.out.println("code: " + code);
 
         return "done";
