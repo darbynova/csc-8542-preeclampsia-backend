@@ -1,6 +1,5 @@
 package edu.villanova.csc8542.preeclampsia.config;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix="app.ihealth")
