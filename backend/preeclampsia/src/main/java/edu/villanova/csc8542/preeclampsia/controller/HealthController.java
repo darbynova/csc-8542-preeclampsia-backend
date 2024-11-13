@@ -1,6 +1,8 @@
 package edu.villanova.csc8542.preeclampsia.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.villanova.csc8542.preeclampsia.config.AppProperties;
+import edu.villanova.csc8542.preeclampsia.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,6 +58,19 @@ public class HealthController {
                 .body(String.class);
 
         System.out.println("result=" + result);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Map JSON to Java object
+            TokenResponse tokenResponse = objectMapper.readValue(result, TokenResponse.class);
+
+            // Retrieve AccessToken
+            String accessToken = tokenResponse.getAccessToken();
+            System.out.println("AccessToken: " + accessToken);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.ok("success");
     }
