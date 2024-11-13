@@ -62,35 +62,32 @@ public class HealthController {
         System.out.println("result=" + result);
 
         // parse access token and userID from result
-        String accessToken = null;
-        String userId = null;
+        TokenResponse tokenResponse = null;
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
 
             // Map JSON to Java object
-            TokenResponse tokenResponse = objectMapper.readValue(result, TokenResponse.class);
-
-            // Retrieve AccessToken
-            accessToken = tokenResponse.getAccessToken();
-            userId = tokenResponse.getUserId();
-
-            System.out.println("AccessToken: " + accessToken);
-            System.out.println("UserID: " + userId);
+            tokenResponse = objectMapper.readValue(result, TokenResponse.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        // Retrieve AccessToken
+        String accessToken = tokenResponse.getAccessToken();
+        String userId = tokenResponse.getUserId();
+
+        System.out.println("AccessToken: " + accessToken);
+        System.out.println("UserID: " + userId);
+
         // Make requests to iHealth API endpoint for blood pressure
-        String finalAccessToken = accessToken;
-        String finalUserId = userId;
 
         String bloodPressureResult = restClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/openapiv2/user/" + finalUserId + "/bp.json")
+                        .path("/openapiv2/user/" + userId + "/bp.json")
                         .queryParam("client_id", appProperties.getClientId())
                         .queryParam("client_secret", appProperties.getClientSecret())
-                        .queryParam("access_token", finalAccessToken)
+                        .queryParam("access_token", accessToken)
                         .queryParam("sc", appProperties.getApiSc())
                         .queryParam("sv", appProperties.getApiSv())
                         .build())
@@ -99,6 +96,5 @@ public class HealthController {
 
         return ResponseEntity.ok(bloodPressureResult);
     }
-
 
 }
