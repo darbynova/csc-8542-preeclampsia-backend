@@ -1,5 +1,6 @@
 package edu.villanova.csc8542.preeclampsia.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.villanova.csc8542.preeclampsia.config.AppProperties;
 import edu.villanova.csc8542.preeclampsia.dto.TokenResponse;
@@ -45,6 +46,7 @@ public class HealthController {
     public ResponseEntity<String> requestAccessToken(@RequestParam String code) {
         System.out.println("code: " + code);
 
+        // use code to request access token
         String result = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(appProperties.getAuthorizationUrl())
@@ -59,6 +61,10 @@ public class HealthController {
 
         System.out.println("result=" + result);
 
+        // parse access token and userID from result
+        String accessToken = null;
+        String userId = null;
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -66,13 +72,33 @@ public class HealthController {
             TokenResponse tokenResponse = objectMapper.readValue(result, TokenResponse.class);
 
             // Retrieve AccessToken
-            String accessToken = tokenResponse.getAccessToken();
+            accessToken = tokenResponse.getAccessToken();
+            userId = tokenResponse.getUserId();
+
             System.out.println("AccessToken: " + accessToken);
+            System.out.println("UserID: " + userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return ResponseEntity.ok("success");
+        // Make requests to iHealth API endpoint for blood pressure
+        String finalAccessToken = accessToken;
+        String finalUserId = userId;
+
+        String bloodPressureResult = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/openapiv2/user/" + finalUserId + "/bp.json")
+                        .queryParam("client_id", appProperties.getClientId())
+                        .queryParam("client_secret", appProperties.getClientSecret())
+                        .queryParam("access_token", finalAccessToken)
+                        .queryParam("sc", appProperties.getApiSc())
+                        .queryParam("sv", appProperties.getApiSv())
+                        .build())
+                .retrieve()
+                .body(String.class);
+
+        return ResponseEntity.ok(bloodPressureResult);
     }
+
 
 }
