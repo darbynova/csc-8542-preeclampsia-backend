@@ -31,7 +31,7 @@ public class HealthController {
     @GetMapping("/auth")
     public RedirectView redirectToAuth() {
 
-        RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUrl());
+        RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUri());
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("client_id", appProperties.getClientId());
@@ -45,14 +45,14 @@ public class HealthController {
         return redirectView;
     }
 
-    @GetMapping("/redirect")
-    public ResponseEntity<String> requestAccessToken(@RequestParam String code) {
+    @GetMapping(value = "/redirect", produces = "application/json")
+    public String requestAccessToken(@RequestParam String code) {
         logger.debug("code: " + code);
 
         // use code to request access token
         String result = restClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(appProperties.getAuthorizationUrl())
+                        .path(appProperties.getAuthorizationUri())
                         .queryParam("client_id", appProperties.getClientId())
                         .queryParam("client_secret", appProperties.getClientSecret())
                         .queryParam("grant_type", appProperties.getGrantType())
@@ -77,7 +77,7 @@ public class HealthController {
         // Make requests to iHealth API endpoint for blood pressure
         String bloodPressureResult = restClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/openapiv2/user/" + userId + "/bp.json")
+                        .path(appProperties.getBloodPressureUri() + userId + "/bp.json")
                         .queryParam("client_id", appProperties.getClientId())
                         .queryParam("client_secret", appProperties.getClientSecret())
                         .queryParam("access_token", accessToken)
@@ -89,7 +89,7 @@ public class HealthController {
 
         logger.debug("bloodPressureResult=" + bloodPressureResult);
 
-        return ResponseEntity.ok(bloodPressureResult);
+        return bloodPressureResult;
     }
 
     private TokenResponse convertToTokenResponse(String result) {
