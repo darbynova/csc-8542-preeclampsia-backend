@@ -1,9 +1,10 @@
 package edu.villanova.csc8542.preeclampsia.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.villanova.csc8542.preeclampsia.config.AppProperties;
 import edu.villanova.csc8542.preeclampsia.dto.TokenResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 @RestController
 public class HealthController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AppProperties appProperties;
     private RestClient restClient;
@@ -44,7 +47,7 @@ public class HealthController {
 
     @GetMapping("/redirect")
     public ResponseEntity<String> requestAccessToken(@RequestParam String code) {
-        System.out.println("code: " + code);
+        logger.debug("code: " + code);
 
         // use code to request access token
         String result = restClient.get()
@@ -59,29 +62,19 @@ public class HealthController {
                 .retrieve()
                 .body(String.class);
 
-        System.out.println("result=" + result);
+        logger.debug("result=" + result);
 
         // parse access token and userID from result
-        TokenResponse tokenResponse = null;
+        TokenResponse tokenResponse = convertToTokenResponse(result);
 
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            // Map JSON to Java object
-            tokenResponse = objectMapper.readValue(result, TokenResponse.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        // Retrieve AccessToken
+        // Retrieve accessToken and userId
         String accessToken = tokenResponse.getAccessToken();
         String userId = tokenResponse.getUserId();
 
-        System.out.println("AccessToken: " + accessToken);
-        System.out.println("UserID: " + userId);
+        logger.debug("AccessToken: " + accessToken);
+        logger.debug("UserID: " + userId);
 
         // Make requests to iHealth API endpoint for blood pressure
-
         String bloodPressureResult = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/openapiv2/user/" + userId + "/bp.json")
@@ -94,7 +87,24 @@ public class HealthController {
                 .retrieve()
                 .body(String.class);
 
+        logger.debug("bloodPressureResult=" + bloodPressureResult);
+
         return ResponseEntity.ok(bloodPressureResult);
+    }
+
+    private TokenResponse convertToTokenResponse(String result) {
+        TokenResponse tokenResponse = null;
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Map JSON to Java object
+            tokenResponse = objectMapper.readValue(result, TokenResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return tokenResponse;
     }
 
 }
