@@ -1,13 +1,13 @@
 package edu.villanova.csc8542.preeclampsia.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.villanova.csc8542.preeclampsia.config.AppProperties;
-import edu.villanova.csc8542.preeclampsia.dto.TokenResponse;
-import org.springframework.http.ResponseEntity;
+import edu.villanova.csc8542.preeclampsia.service.HealthService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
@@ -16,18 +16,20 @@ import java.util.Map;
 @RestController
 public class HealthController {
 
-    private AppProperties appProperties;
-    private RestClient restClient;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public HealthController(AppProperties appProperties, RestClient.Builder restClientBuilder) {
+    private AppProperties appProperties;
+    private HealthService healthService;
+
+    public HealthController(AppProperties appProperties, HealthService healthService) {
         this.appProperties = appProperties;
-        this.restClient = restClientBuilder.baseUrl(appProperties.getBaseUrl()).build();
+        this.healthService = healthService;
     }
 
-    @GetMapping("/auth")
+    @GetMapping("/")
     public RedirectView redirectToAuth() {
 
-        RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUrl());
+        RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUri());
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("client_id", appProperties.getClientId());
@@ -41,38 +43,13 @@ public class HealthController {
         return redirectView;
     }
 
-    @GetMapping("/redirect")
-    public ResponseEntity<String> requestAccessToken(@RequestParam String code) {
-        System.out.println("code: " + code);
+    @GetMapping(value = "/redirect", produces = "application/json")
+    public String requestAccessToken(@RequestParam String code) {
+        logger.debug("code: " + code);
 
-        String result = restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(appProperties.getAuthorizationUrl())
-                        .queryParam("client_id", appProperties.getClientId())
-                        .queryParam("client_secret", appProperties.getClientSecret())
-                        .queryParam("grant_type", appProperties.getGrantType())
-                        .queryParam("redirect_uri", appProperties.getRedirectUri())
-                        .queryParam("code", code)
-                        .build())
-                .retrieve()
-                .body(String.class);
+        String bloodPressureResult = healthService.getBloodPressureResult(code);
 
-        System.out.println("result=" + result);
-
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            // Map JSON to Java object
-            TokenResponse tokenResponse = objectMapper.readValue(result, TokenResponse.class);
-
-            // Retrieve AccessToken
-            String accessToken = tokenResponse.getAccessToken();
-            System.out.println("AccessToken: " + accessToken);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return ResponseEntity.ok("success");
+        return bloodPressureResult;
     }
 
 }

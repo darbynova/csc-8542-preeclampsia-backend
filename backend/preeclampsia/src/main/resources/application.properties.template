@@ -1,0 +1,23 @@
+app.ihealth.base-url=https://api.ihealthlabs.com:8443
+app.ihealth.authorization-uri=/OpenApiV2/OAuthv2/userauthorization/
+app.ihealth.blood-pressure-uri=/OpenApiV2/user/
+app.ihealth.provider=ihealth-provider
+app.ihealth.client-id=<<INSERT YOUR APP CLIENT ID>>
+app.ihealth.client-secret=<<INSERT YOUR APP CLIENT SECRET>>
+app.ihealth.response-type=code
+app.ihealth.grant-type=authorization_code
+app.ihealth.redirect-uri=http://localhost:8080/redirect
+
+app.ihealth.api-name=OpenApiBP
+app.ihealth.api-sc=<<INSERT YOUR APP SC value>>
+app.ihealth.api-sv=<<INSERT YOUR APP SV value>>
+
+# REST CORS support
+spring.web.cors.allowed-origin-patterns=http://localhost:3000,http://localhost:5173
+spring.web.cors.allowed-methods=GET,POST,PUT,DELETE
+spring.web.cors.allowed-headers=*
+spring.web.cors.allow-credentials=true
+spring.web.cors.max-age=3600
+
+# Logging
+logging.level.edu.villanova.csc8542.preeclampsia=DEBUG

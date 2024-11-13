@@ -1,27 +1,23 @@
 package edu.villanova.csc8542.preeclampsia.config;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix="app.ihealth")
 public class AppProperties {
 
     private String baseUrl;
-    private String authorizationUrl;
+    private String authorizationUri;
     private String clientId;
     private String clientSecret;
     private String responseType;
     private String grantType;
     private String redirectUri;
 
+    private String bloodPressureUri;
+
     private String apiName;
     private String apiSc;
     private String apiSv;
-
-    @PostConstruct
-    public void show() {
-        System.out.println("authorizationUrl=" + authorizationUrl);
-    }
 
     public String getBaseUrl() {
         return baseUrl;
@@ -31,12 +27,12 @@ public class AppProperties {
         this.baseUrl = baseUrl;
     }
 
-    public String getAuthorizationUrl() {
-        return authorizationUrl;
+    public String getAuthorizationUri() {
+        return authorizationUri;
     }
 
-    public void setAuthorizationUrl(String authorizationUrl) {
-        this.authorizationUrl = authorizationUrl;
+    public void setAuthorizationUri(String authorizationUri) {
+        this.authorizationUri = authorizationUri;
     }
 
     public String getClientId() {
@@ -77,6 +73,14 @@ public class AppProperties {
 
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
+    }
+
+    public String getBloodPressureUri() {
+        return bloodPressureUri;
+    }
+
+    public void setBloodPressureUri(String bloodPressureUri) {
+        this.bloodPressureUri = bloodPressureUri;
     }
 
     public String getApiName() {
