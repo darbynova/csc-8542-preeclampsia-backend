@@ -1,6 +1,7 @@
 package edu.villanova.csc8542.preeclampsia.controller;
 
 import edu.villanova.csc8542.preeclampsia.config.AppProperties;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class HealthController {
     @GetMapping("/auth")
     public RedirectView redirectToAuth() {
 
-        RedirectView redirectView = new RedirectView(appProperties.getAuthorizationUrl());
+        RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUrl());
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("client_id", appProperties.getClientId());
@@ -39,10 +40,24 @@ public class HealthController {
     }
 
     @GetMapping("/redirect")
-    public String requestAccessToken(@RequestParam String code) {
+    public ResponseEntity<String> requestAccessToken(@RequestParam String code) {
         System.out.println("code: " + code);
 
-        return "done";
+        String result = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(appProperties.getAuthorizationUrl())
+                        .queryParam("client_id", appProperties.getClientId())
+                        .queryParam("client_secret", appProperties.getClientSecret())
+                        .queryParam("grant_type", appProperties.getGrantType())
+                        .queryParam("redirect_uri", appProperties.getRedirectUri())
+                        .queryParam("code", code)
+                        .build())
+                .retrieve()
+                .body(String.class);
+
+        System.out.println("result=" + result);
+
+        return ResponseEntity.ok("success");
     }
 
 }

@@ -11,6 +11,7 @@ public class AppProperties {
     private String clientId;
     private String clientSecret;
     private String responseType;
+    private String grantType;
     private String redirectUri;
 
     private String apiName;
@@ -60,6 +61,14 @@ public class AppProperties {
 
     public void setResponseType(String responseType) {
         this.responseType = responseType;
+    }
+
+    public String getGrantType() {
+        return grantType;
+    }
+
+    public void setGrantType(String grantType) {
+        this.grantType = grantType;
     }
 
     public String getRedirectUri() {
