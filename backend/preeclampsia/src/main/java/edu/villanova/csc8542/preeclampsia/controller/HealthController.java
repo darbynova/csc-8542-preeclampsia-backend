@@ -26,7 +26,7 @@ public class HealthController {
         this.healthService = healthService;
     }
 
-    @GetMapping("/auth")
+    @GetMapping("/")
     public RedirectView redirectToAuth() {
 
         RedirectView redirectView = new RedirectView(appProperties.getBaseUrl() + appProperties.getAuthorizationUri());
