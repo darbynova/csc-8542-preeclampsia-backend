@@ -4,9 +4,11 @@ This is a basic Node.js and Express application to mock the backend for preeclam
 
 ## Project Structure
 
+```
 ├── app.js # Main application file 
 ├── package.json # Project metadata and dependencies 
 └── README.md # Project documentation
+```
 
 ## Features
 
