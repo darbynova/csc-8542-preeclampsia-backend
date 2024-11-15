@@ -46,6 +46,26 @@ This command will:
 
 The `-Dspring-boot.run.profiles=dev`: sets the active Spring profile to dev. Spring will load the configuration from application-dev.properties or other profile-specific resources.
 
+You should see the following ouptput
+
+```
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                
+
+2024-11-15T02:57:29.139-05:00  INFO 38262 --- [preeclampsia] [           main] e.v.c.p.PreeclampsiaApplication          : Starting PreeclampsiaApplication using Java 23.0.1 with PID 38262 (/Users/chaddarby/csc-8542-preeclampsia-backend/backend/preeclampsia/target/classes started by chaddarby in /Users/chaddarby/csc-8542-preeclampsia-backend/backend/preeclampsia)
+2024-11-15T02:57:29.140-05:00 DEBUG 38262 --- [preeclampsia] [           main] e.v.c.p.PreeclampsiaApplication          : Running with Spring Boot v3.3.5, Spring v6.1.14
+2024-11-15T02:57:29.140-05:00  INFO 38262 --- [preeclampsia] [           main] e.v.c.p.PreeclampsiaApplication          : The following 1 profile is active: "dev"
+...
+...
+2024-11-15T02:57:29.822-05:00  INFO 38262 --- [preeclampsia] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-15T02:57:29.829-05:00  INFO 38262 --- [preeclampsia] [           main] e.v.c.p.PreeclampsiaApplication          : Started PreeclampsiaApplication in 0.836 seconds (process running for 0.975)
+```
+
 ### Step 4: Access the Application
 The application will be accessible at http://localhost:8080
 
