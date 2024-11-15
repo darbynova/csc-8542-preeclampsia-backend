@@ -14,7 +14,9 @@ This is a basic Node.js and Express application to mock the backend for preeclam
 
 - **Redirection:** Automatically redirects from `/` to `/demo`.
 - **Demo Page:** Displays a page with a link to "Simulate iHealth login."
-- **Confirmation Page:** Shows a "Done" message to confirm the simulated login action.
+- **Confirmation Page:** 
+    - Sends canned JSON to front end at: http://localhost:3000/ihealth-callback
+    - Shows a "Done" message to confirm the simulated login action. 
 
 ## Prerequisites
 
