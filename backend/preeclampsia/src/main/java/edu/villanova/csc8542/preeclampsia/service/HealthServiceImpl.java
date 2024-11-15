@@ -6,6 +6,8 @@ import edu.villanova.csc8542.preeclampsia.dto.TokenResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -16,10 +18,12 @@ public class HealthServiceImpl implements HealthService {
 
     private AppProperties appProperties;
     private RestClient restClient;
+    private RestClient restClientForFrontEnd;
 
     public HealthServiceImpl(AppProperties appProperties, RestClient.Builder restClientBuilder) {
         this.appProperties = appProperties;
         this.restClient = restClientBuilder.baseUrl(appProperties.getBaseUrl()).build();
+        this.restClientForFrontEnd  = restClientBuilder.baseUrl(appProperties.getFrontendBaseUrl()).build();
     }
 
     public String getBloodPressureResult(String code) {
@@ -44,6 +48,18 @@ public class HealthServiceImpl implements HealthService {
 
         return bloodPressureResult;
     }
+
+    @Override
+    public void sendToClient(String bloodPressureResult) throws RuntimeException {
+
+        ResponseEntity<Void> response = restClientForFrontEnd.post()
+                .uri(appProperties.getFrontendCallbackUri())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bloodPressureResult)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
 
     private String retrieveBloodPressure(String userId, String accessToken) {
         String bloodPressureResult = restClient.get()
@@ -91,4 +107,6 @@ public class HealthServiceImpl implements HealthService {
 
         return tokenResponse;
     }
+
+
 }

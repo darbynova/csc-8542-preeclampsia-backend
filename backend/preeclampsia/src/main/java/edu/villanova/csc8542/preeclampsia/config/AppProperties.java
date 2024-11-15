@@ -19,6 +19,9 @@ public class AppProperties {
     private String apiSc;
     private String apiSv;
 
+    private String frontendBaseUrl;
+    private String frontendCallbackUri;
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -81,6 +84,22 @@ public class AppProperties {
 
     public void setBloodPressureUri(String bloodPressureUri) {
         this.bloodPressureUri = bloodPressureUri;
+    }
+
+    public String getFrontendBaseUrl() {
+        return frontendBaseUrl;
+    }
+
+    public void setFrontendBaseUrl(String frontendBaseUrl) {
+        this.frontendBaseUrl = frontendBaseUrl;
+    }
+
+    public String getFrontendCallbackUri() {
+        return frontendCallbackUri;
+    }
+
+    public void setFrontendCallbackUri(String frontendCallbackUri) {
+        this.frontendCallbackUri = frontendCallbackUri;
     }
 
     public String getApiName() {

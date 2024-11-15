@@ -49,6 +49,14 @@ public class HealthController {
 
         String bloodPressureResult = healthService.getBloodPressureResult(code);
 
+        // send data to frontend
+        try {
+            healthService.sendToClient(bloodPressureResult);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            logger.error("Could not send to client");
+        }
+
         return bloodPressureResult;
     }
 
