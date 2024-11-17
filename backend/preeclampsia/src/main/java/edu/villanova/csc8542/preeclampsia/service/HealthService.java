@@ -4,4 +4,5 @@ public interface HealthService {
 
     String getBloodPressureResult(String code);
 
+    void sendToClient(String bloodPressureResult);
 }
