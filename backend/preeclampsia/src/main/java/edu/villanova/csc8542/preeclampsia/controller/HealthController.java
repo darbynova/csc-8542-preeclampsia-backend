@@ -44,7 +44,7 @@ public class HealthController {
     }
 
     @GetMapping(value = "/redirect", produces = "application/json")
-    public String requestAccessToken(@RequestParam String code) {
+    public RedirectView requestAccessToken(@RequestParam String code) {
         logger.debug("code: " + code);
 
         String bloodPressureResult = healthService.getBloodPressureResult(code);
@@ -57,7 +57,10 @@ public class HealthController {
             logger.error("Could not send to client");
         }
 
-        return bloodPressureResult;
+        RedirectView redirectView = new RedirectView("http://localhost:3000");
+        
+
+        return redirectView;
     }
 
 }
