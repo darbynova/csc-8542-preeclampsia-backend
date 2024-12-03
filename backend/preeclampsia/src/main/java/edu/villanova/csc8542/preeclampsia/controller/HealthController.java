@@ -60,8 +60,7 @@ public class HealthController {
             logger.error("Could not send to client");
         }
 
-        RedirectView redirectView = new RedirectView("http://localhost:3000");
-        
+        RedirectView redirectView = new RedirectView(appProperties.getFrontendBaseUrl());        
 
         return redirectView;
     }
